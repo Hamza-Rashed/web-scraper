@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "web-scraper"
+version = "0.1.0"
+description = ""
+authors = ["Hamza Rashed <hamzarashed503@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+bs4 = "^0.0.1"
+requests = "^2.25.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
