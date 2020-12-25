@@ -1,29 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
-import json
+    
+URL = 'https://en.wikipedia.org/wiki/History_of_Mexico'
+page = requests.get(URL)
+def get_citations_needed_count(soup):
+    page = requests.get(URL)
+    results = BeautifulSoup(page.content, 'html.parser').find(id="bodyContent").find_all('a', title='Wikipedia:Citation needed')
+    return len(results)
 
-URL = "https://en.wikipedia.org/wiki/History_of_Mexico"
+def get_citations_needed_report(soup):
+    all_paragraphs = BeautifulSoup(page.content, 'html.parser').find(id="bodyContent").find_all('p')
 
-def get_citations_needed_count(URL): 
-    resultOfPage = requests.get(URL)
-    soup = BeautifulSoup(resultOfPage.content, 'html.parser')
-    results = soup.find(class_="mw-parser-output")
-    return results
+    all_paragraph=[]
+    for paragraph in all_paragraphs:
+        result_paragraph = paragraph.find('a', { "title" : "Wikipedia:Citation needed"})
+        if result_paragraph:
+            all_paragraph.append(paragraph.text)
+    return all_paragraph
+    
+def get_citations_needed_by_section(soup):
+    all_sections = BeautifulSoup(page.content, 'html.parser').find(id="bodyContent").find_all('section')
 
-def get_citations_needed_report(URL): 
-    resultOfPage = requests.get(URL)
-    soup = BeautifulSoup(resultOfPage.content, 'html.parser')
-    results = soup.find(class_="mw-parser-output")
+    all_section=[]
+    for section in all_sections:
+        result_section = section.find('a', { "title" : "Wikipedia:Citation needed"})
+        if result_section:
+            all_section.append(section.text)
+    return all_section
+    
 
-    paragraphs  = []
-    lines = []
+if __name__ == "__main__":
 
-    resultsss = results.find_all('p') # get all paragraphs
-    for res in resultsss:
-            all_para = res.find_all('span', string = 'citation')
-            if all_para:
-                for hamza in range(len(all_para)):
-                        paragraphs.append(res.text) 
-                        poset = res.text.index('citation') 
-                        line = res.text[poset].split(". ")
-                        lines.append(line[-1])
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    print ("citations needed: ", get_citations_needed_count(URL))
+    print(get_citations_needed_report(URL))
+    print(get_citations_needed_by_section(URL))
